@@ -4,10 +4,9 @@ use yii\helpers\Html;
 
 
 /* @var $this yii\web\View */
-/* @var $model app\models\gestione\Cronjob */
 
-$this->title = Yii::t('gestione', 'Create Cronjob');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('gestione', 'Cronjobs'), 'url' => ['index']];
+$this->title = Yii::t('cronjob', 'Create Cronjob');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('cronjob', 'Cronjobs'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="cronjob-create">

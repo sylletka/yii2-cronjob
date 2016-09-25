@@ -3,9 +3,6 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model app\models\gestione\CronjobSearch */
-/* @var $form yii\widgets\ActiveForm */
 ?>
 
 <div class="cronjob-search">
@@ -32,8 +29,8 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'params') ?>
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('gestione', 'Search'), ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton(Yii::t('gestione', 'Reset'), ['class' => 'btn btn-default']) ?>
+        <?= Html::submitButton(Yii::t('cronjob', 'Search'), ['class' => 'btn btn-primary']) ?>
+        <?= Html::resetButton(Yii::t('cronjob', 'Reset'), ['class' => 'btn btn-default']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

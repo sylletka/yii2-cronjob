@@ -2,15 +2,12 @@
 
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $model app\models\gestione\Cronjob */
-
-$this->title = Yii::t('gestione', 'Update {modelClass}: ', [
+$this->title = Yii::t('cronjob', 'Update {modelClass}: ', [
     'modelClass' => 'Cronjob',
 ]) . ' ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('gestione', 'Cronjobs'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('cronjob', 'Cronjobs'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = Yii::t('gestione', 'Update');
+$this->params['breadcrumbs'][] = Yii::t('cronjob', 'Update');
 ?>
 <div class="cronjob-update">
 

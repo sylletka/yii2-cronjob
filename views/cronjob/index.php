@@ -3,11 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 
-/* @var $this yii\web\View */
-/* @var $searchModel app\models\gestione\CronjobSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
-$this->title = Yii::t('gestione', 'Cronjobs');
+$this->title = Yii::t('cronjob', 'Cronjobs');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="cronjob-index">
@@ -16,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a(Yii::t('gestione', 'Create Cronjob'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('cronjob', 'Create Cronjob'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([

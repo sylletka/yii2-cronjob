@@ -5,7 +5,6 @@ use yii\widgets\ActiveForm;
 use nex\chosen\Chosen;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\gestione\Cronjob */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -73,7 +72,7 @@ $cronoptions = [
     </div>
     <div class="form-group">
         <?= Html::submitButton(
-            $model->isNewRecord ? Yii::t('gestione', 'Create') : Yii::t('gestione', 'Update'), 
+            $model->isNewRecord ? Yii::t('cronjob', 'Create') : Yii::t('cronjob', 'Update'), 
             ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'])
         ?>
     </div>
