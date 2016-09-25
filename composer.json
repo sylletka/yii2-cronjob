@@ -16,7 +16,8 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "~2.0.0"
+        "yiisoft/yii2": "~2.0.0",
+        "nex/yii2-chosen" : "*"
     },
     "autoload": {
         "psr-4": {

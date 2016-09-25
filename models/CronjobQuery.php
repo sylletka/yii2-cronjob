@@ -1,6 +1,6 @@
 <?php
 
-namespace sylletka\cronjob\models\gestione;
+namespace sylletka\cronjob\models;
 
 /**
  * This is the ActiveQuery class for [[Cronjob]].

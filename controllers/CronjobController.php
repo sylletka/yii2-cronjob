@@ -1,23 +1,23 @@
 <?php
 
-namespace app\controllers\gestione;
+namespace sylletka\cronjob\controllers;
 
 use Yii;
-use app\models\gestione\Cronjob;
-use app\models\gestione\CronjobDayOfWeek;
-use app\models\gestione\CronjobDay;
-use app\models\gestione\CronjobMinute;
-use app\models\gestione\CronjobMonth;
-use app\models\gestione\CronjobHour;
-use app\models\gestione\CronjobSearch;
-use app\controllers\GestioneController;
+use sylletka\cronjob\models\Cronjob;
+use sylletka\cronjob\models\CronjobDayOfWeek;
+use sylletka\cronjob\models\CronjobDay;
+use sylletka\cronjob\models\CronjobMinute;
+use sylletka\cronjob\models\CronjobMonth;
+use sylletka\cronjob\models\CronjobHour;
+use sylletka\cronjob\models\CronjobSearch;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * CronjobController implements the CRUD actions for Cronjob model.
  */
-class CronjobController extends GestioneController
+class CronjobController extends Controller
 {
 
     /**
@@ -234,7 +234,6 @@ class CronjobController extends GestioneController
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
         return $this->redirect(['index']);
     }
 

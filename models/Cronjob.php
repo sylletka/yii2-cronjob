@@ -3,6 +3,7 @@
 namespace sylletka\cronjob\models;
 
 use Yii;
+use sylletka\cronjob\Module;
 
 /**
  * This is the model class for table "cronjob".
@@ -53,9 +54,9 @@ class Cronjob extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('gestione', 'ID'),
-            'cron_command' => Yii::t('gestione', 'Cron Command'),
-            'params' => Yii::t('gestione', 'Params'),
+            'id' => Yii::t('cronjob', 'ID'),
+            'cron_command' => Yii::t('cronjob', 'Cron Command'),
+            'params' => Yii::t('cronjob', 'Params'),
         ];
     }
 

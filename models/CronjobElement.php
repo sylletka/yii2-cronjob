@@ -1,8 +1,9 @@
 <?php
 
-namespace sylletka\cronjob\models\gestione;
+namespace sylletka\cronjob\models;
 
 use Yii;
+use sylletka\cronjob\Module;
 
 /**
  * This is the model class for table "cronjob_day".
@@ -31,9 +32,9 @@ class CronjobElement extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('gestione', 'ID'),
-            'cronjob' => Yii::t('gestione', 'Cronjob'),
-            'value' => Yii::t('gestione', 'Value'),
+            'id' => Yii::t('cronjob', 'ID'),
+            'cronjob' => Yii::t('cronjob', 'Cronjob'),
+            'value' => Yii::t('cronjob', 'Value'),
         ];
     }
 

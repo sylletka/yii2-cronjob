@@ -1,14 +1,14 @@
 <?php
 
-namespace sylletka\cronjob\models\gestione;
+namespace sylletka\cronjob\models;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use sylletka\cronjob\models\gestione\Cronjob;
+use sylletka\cronjob\models\Cronjob;
 
 /**
- * CronjobSearch represents the model behind the search form about `sylletka\cronjob\models\gestione\Cronjob`.
+ * CronjobSearch represents the model behind the search form about `sylletka\cronjob\models\Cronjob`.
  */
 class CronjobSearch extends Cronjob
 {
