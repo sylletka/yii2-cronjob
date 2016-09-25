@@ -1,0 +1,26 @@
+{
+    "name": "sylletka/yii2-cronjob",
+    "type": "yii2-module",
+    "description": "This module provides pages and commands to manage and run cron jobs",
+    "keywords": ["yii2", "cron", "cronjob"],
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/sylletka/yii2-cronjob/issues",
+        "wiki": "https://github.com/sylletka/yii2-cronjob/wiki",
+        "source": "https://github.com/sylletka/yii2-cronjob"
+    },
+    "authors": [
+        {
+            "name": "Samuele Saorin",
+            "email": "sylletka@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "sylletka\\cronjob\\": ""
+        }
+    }
+}
