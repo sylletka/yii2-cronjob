@@ -18,3 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
     ]) ?>
 
 </div>
+<pre>
+<?php
+var_dump($model->attributes());
+?>
+</pre>

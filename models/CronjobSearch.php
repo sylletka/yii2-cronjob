@@ -24,15 +24,6 @@ class CronjobSearch extends Cronjob
     }
 
     /**
-     * @inheritdoc
-     */
-    public function scenarios()
-    {
-        // bypass scenarios() implementation in the parent class
-        return Model::scenarios();
-    }
-
-    /**
      * Creates data provider instance with search query applied
      *
      * @param array $params
@@ -42,7 +33,13 @@ class CronjobSearch extends Cronjob
     public function search($params)
     {
         $query = Cronjob::find();
-        $query->with('cronjobMinutes');
+        $query->with(
+            'cronjobMinutes', 
+            'cronjobDays', 
+            'cronjobDayOfWeeks', 
+            'cronjobHours', 
+            'cronjobMonths'
+        );
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);

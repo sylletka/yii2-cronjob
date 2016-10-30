@@ -24,13 +24,13 @@ $cronoptions = [
     </div>
     <div class="row">
         <?php foreach ( $cronoptions as $attribute => $number ): ?>
-            <?php 
+            <?php
                 $range = range($number['min'], $number['max']);
                 array_walk($range, function(&$value, $key) {
                     $value = str_pad($value, 2, '0', STR_PAD_LEFT);;
                 });
-                $options = array_merge(['*'], $range);
-                $items = array_combine( $options, $options);
+//                $options = array_merge(['*'], $range);
+//                $items = array_combine( $options, $options);
                 $values = [];
                 foreach ($model->$attribute as $related){
                     $values[] = $related->value;
@@ -41,7 +41,7 @@ $cronoptions = [
                 <?= Chosen::widget([
                         'name' => "Cronjob[$attribute][]",
                         'value' => $values,
-                        'items' => $items,
+                        'items' => $range,
                         'multiple' => true,
                         'placeholder' => '*',
                     ]);
@@ -49,18 +49,19 @@ $cronoptions = [
             </div>
         <?php endforeach; ?>
         <div class="col-md-2">
-            <?php            
+            <?php
                 $values = [];
+                //echo $model->cronjobDayOfWeeks;
                 foreach ($model->cronjobDayOfWeeks as $related){
                     $values[] = $related->value;
                 }
-                $days_of_week = array_merge(['*'], $model->listDaysOfWeek());
+//                $days_of_week = array_merge(['*'], $model->listDaysOfWeek());
             ?>
             <?= Html::activeLabel( $model, 'cronjobDayOfWeeks' );?>
             <?= Chosen::widget([
                     'name' => "Cronjob[cronjobDayOfWeeks][]",
                     'value' => $values,
-                    'items' => $days_of_week,
+                    'items' => $model->listDaysOfWeek(),
                     'multiple' => true,
                     'placeholder' => '*',
                 ]);
@@ -72,7 +73,7 @@ $cronoptions = [
     </div>
     <div class="form-group">
         <?= Html::submitButton(
-            $model->isNewRecord ? Yii::t('cronjob', 'Create') : Yii::t('cronjob', 'Update'), 
+            $model->isNewRecord ? Yii::t('cronjob', 'Create') : Yii::t('cronjob', 'Update'),
             ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary'])
         ?>
     </div>

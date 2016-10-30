@@ -4,11 +4,7 @@ namespace sylletka\cronjob\controllers;
 
 use Yii;
 use sylletka\cronjob\models\Cronjob;
-use sylletka\cronjob\models\CronjobDayOfWeek;
-use sylletka\cronjob\models\CronjobDay;
-use sylletka\cronjob\models\CronjobMinute;
-use sylletka\cronjob\models\CronjobMonth;
-use sylletka\cronjob\models\CronjobHour;
+use sylletka\cronjob\models\CronjobElement;
 use sylletka\cronjob\models\CronjobSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -36,97 +32,29 @@ class CronjobController extends Controller
     }
 
     /**
-     * Displays a single Cronjob model.
-     * @param integer $id
-     * @return mixed
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new Cronjob model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
+        $post = Yii::$app->request->post();
         $model = new Cronjob();
-        if ( $post = Yii::$app->request->post()){
-            $model->cron_command = $post['Cronjob']['cron_command'];
-            $model->params = $post['Cronjob']['params'];
-            if ( $model->save() ) {
-                $cronjobId = $model->getPrimaryKey();
-                if (array_key_exists('cronjobDayOfWeeks',$post['Cronjob'])){
-                    foreach ($post['Cronjob']['cronjobDayOfWeeks'] as $value){
-                        $related = new  CronjobDayOfWeek;
-                        $related->cronjob = $cronjobId;
-                        $related->value = $value;
-                        $related->save();
-                    }
+        if ($model->load($post) && $model->save()){
+            foreach ($model->relationMap as $key => $attribute){
+                if (array_key_exists($attribute, $post['Cronjob'])){
+                    $values = $post['Cronjob'][$attribute];
                 } else {
-                    $related = new CronjobDayOfWeek;
-                    $related->cronjob = $cronjobId;
-                    $related->value = "*";
-                    $related->save();
+                    $values = ["*"];
                 }
-                if (array_key_exists('cronjobDays',$post['Cronjob'])){
-                    foreach ($post['Cronjob']['cronjobDays'] as $value){
-                        $related = new  CronjobDay;
-                        $related->cronjob = $cronjobId;
-                        $related->value = $value;
-                        $related->save();
-                    }
-                } else {
-                    $related = new CronjobDay;
-                    $related->cronjob = $cronjobId;
-                    $related->value = "*";
-                    $related->save();
+                foreach ($values as $value) {
+                    $cronjobElement = new CronjobElement();
+                    $cronjobElement->key = $key;
+                    $cronjobElement->value = $value;
+                    $cronjobElement->link('cronjob', $model);
                 }
-                if (array_key_exists('cronjobMonths',$post['Cronjob'])){
-                    foreach ($post['Cronjob']['cronjobMonths'] as $value){
-                        $related = new  CronjobMonth;
-                        $related->cronjob = $cronjobId;
-                        $related->value = $value;
-                        $related->save();
-                    }
-                } else {
-                    $related = new CronjobMonth;
-                    $related->cronjob = $cronjobId;
-                    $related->value = "*";
-                    $related->save();
-                }
-                if (array_key_exists('cronjobHours',$post['Cronjob'])){
-                    foreach ($post['Cronjob']['cronjobHours'] as $value){
-                        $related = new  CronjobHour;
-                        $related->cronjob = $cronjobId;
-                        $related->value = $value;
-                        $related->save();
-                    }
-                } else {
-                    $related = new CronjobHour;
-                    $related->cronjob = $cronjobId;
-                    $related->value = "*";
-                    $related->save();
-                } 
-                if (array_key_exists('cronjobMinutes',$post['Cronjob'])){
-                    foreach ($post['Cronjob']['cronjobMinutes'] as $value){
-                        $related = new  CronjobMinute;
-                        $related->cronjob = $cronjobId;
-                        $related->value = $value;
-                        $related->save();
-                    }
-                } else {
-                    $related = new CronjobMinute;
-                    $related->cronjob = $cronjobId;
-                    $related->value = "*";
-                    $related->save();
-                }               
-                return $this->redirect(['view', 'id' => $model->id]);
             }
+            return $this->redirect(['index']);
         }
         return $this->render('create', [
             'model' => $model,
@@ -141,84 +69,23 @@ class CronjobController extends Controller
      */
     public function actionUpdate($id)
     {
+        $post = Yii::$app->request->post();
         $model = $this->findModel($id);
-        if ( $post = Yii::$app->request->post()){
-            $model->cron_command = $post['Cronjob']['cron_command'];
-            $model->params = $post['Cronjob']['params'];
-            if ( $model->save() ) {
-                $cronjobId = $model->getPrimaryKey();
-                CronjobDayOfWeek::deleteAll(['cronjob' => $cronjobId]);
-                CronjobDay::deleteAll(['cronjob' => $cronjobId]);
-                CronjobMinute::deleteAll(['cronjob' => $cronjobId]);
-                CronjobMonth::deleteAll(['cronjob' => $cronjobId]);
-                CronjobHour::deleteAll(['cronjob' => $cronjobId]);
-                if (array_key_exists('cronjobDayOfWeeks',$post['Cronjob'])){
-                    foreach ($post['Cronjob']['cronjobDayOfWeeks'] as $value){
-                        $related = new  CronjobDayOfWeek;
-                        $related->cronjob = $cronjobId;
-                        $related->value = $value;
-                        $related->save();
-                    }
+        if ($model->load(Yii::$app->request->post()) && $model->save()){
+            foreach ($model->relationMap as $key => $attribute){
+                if (array_key_exists($attribute, $post['Cronjob'])){
+                    $values = $post['Cronjob'][$attribute];
                 } else {
-                    $related = new CronjobDayOfWeek;
-                    $related->cronjob = $cronjobId;
-                    $related->value = "*";
-                    $related->save();
+                    $values = ["*"];
                 }
-                if (array_key_exists('cronjobDays',$post['Cronjob'])){
-                    foreach ($post['Cronjob']['cronjobDays'] as $value){
-                        $related = new  CronjobDay;
-                        $related->cronjob = $cronjobId;
-                        $related->value = $value;
-                        $related->save();
-                    }
-                } else {
-                    $related = new CronjobDay;
-                    $related->cronjob = $cronjobId;
-                    $related->value = "*";
-                    $related->save();
+                foreach ($values as $value) {
+                    $cronjobElement = new CronjobElement();
+                    $cronjobElement->key = $key;
+                    $cronjobElement->value = $value;
+                    $cronjobElement->link('cronjob', $model);
                 }
-                if (array_key_exists('cronjobMonths',$post['Cronjob'])){
-                    foreach ($post['Cronjob']['cronjobMonths'] as $value){
-                        $related = new  CronjobMonth;
-                        $related->cronjob = $cronjobId;
-                        $related->value = $value;
-                        $related->save();
-                    }
-                } else {
-                    $related = new CronjobMonth;
-                    $related->cronjob = $cronjobId;
-                    $related->value = "*";
-                    $related->save();
-                }
-                if (array_key_exists('cronjobHours',$post['Cronjob'])){
-                    foreach ($post['Cronjob']['cronjobHours'] as $value){
-                        $related = new  CronjobHour;
-                        $related->cronjob = $cronjobId;
-                        $related->value = $value;
-                        $related->save();
-                    }
-                } else {
-                    $related = new CronjobHour;
-                    $related->cronjob = $cronjobId;
-                    $related->value = "*";
-                    $related->save();
-                } 
-                if (array_key_exists('cronjobMinutes',$post['Cronjob'])){
-                    foreach ($post['Cronjob']['cronjobMinutes'] as $value){
-                        $related = new  CronjobMinute;
-                        $related->cronjob = $cronjobId;
-                        $related->value = $value;
-                        $related->save();
-                    }
-                } else {
-                    $related = new CronjobMinute;
-                    $related->cronjob = $cronjobId;
-                    $related->value = "*";
-                    $related->save();
-                }          
             }
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
         return $this->render('update', [
             'model' => $model,
@@ -252,4 +119,38 @@ class CronjobController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
+    /**
+     * Saves the models
+     * @param Cronjob $model
+     * @param array $data the posted data
+     * @return boolean true if the model was successfully saved
+    */
+    protected function saveModel($model, $data)
+    {
+        if ($model->load($data) && $model->save()){
+            foreach ($model->relationMap as $key => $attribute){
+                if (array_key_exists($attribute, $post['Cronjob'])){
+                    $values = $post['Cronjob'][$attribute];
+                } else {
+                    $values = ["*"];
+                }
+                foreach ($values as $value) {
+                    $cronjobElement = new CronjobElement();
+                    $cronjobElement->key = $key;
+                    $cronjobElement->value = $value;
+                    try {
+                        $cronjobElement->link('cronjob', $model);
+                    } catch (Exception $e) {
+                        CronjobElement::deleteAll(['cronjob' => $model->id]);
+                        $model->delete();
+                        throw new InvalidCallException($e->getMessage());
+                    }
+                }
+            }
+        } else {
+            throw new InvalidCallException('Unable to save model');
+        }
+    }
+
 }

@@ -12,23 +12,23 @@ use sylletka\cronjob\Module;
  * @property string $cron_command
  * @property string $params
  *
- * @property CronjobDay[] $cronjobDays 
- * @property CronjobDayOfWeek[] $cronjobDayOfWeeks 
- * @property CronjobHour[] $cronjobHours 
- * @property CronjobMinute[] $cronjobMinutes 
- * @property CronjobMonth[] $cronjobMonths 
+ * @property CronjobDay[] $cronjobDays
+ * @property CronjobDayOfWeek[] $cronjobDayOfWeeks
+ * @property CronjobHour[] $cronjobHours
+ * @property CronjobMinute[] $cronjobMinutes
+ * @property CronjobMonth[] $cronjobMonths
  */
 class Cronjob extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
-     */    
+     */
     public static function getDb()
     {
         $module = Module::getInstance();
         $db = $module->db;
-        return Yii::$app->{$db};  
-    }    
+        return Yii::$app->{$db};
+    }
     /**
      * @inheritdoc
      */
@@ -44,7 +44,7 @@ class Cronjob extends \yii\db\ActiveRecord
     {
         return [
             [['cron_command'], 'required'],
-            [['cron_command', 'params'], 'string']
+            [['cron_command', 'params'], 'string'],
         ];
     }
 
@@ -65,39 +65,47 @@ class Cronjob extends \yii\db\ActiveRecord
 	 */
     public function getCronjobDays()
     {
-       return $this->hasMany(CronjobDay::className(), ['cronjob' => 'id']);
-    } 
+       return $this->hasMany(CronjobElement::className(), ['cronjob' => 'id'])->alias('days')->where(['days.key' => 'day']);
+    }
 
-    /** 
-     * @return \yii\db\ActiveQuery 
-     */ 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCronjobDayOfWeeks()
     {
-       return $this->hasMany(CronjobDayOfWeek::className(), ['cronjob' => 'id']);
+       return $this->hasMany(CronjobElement::className(), ['cronjob' => 'id'])->alias('day_of_weeks')->where(['day_of_weeks.key' => 'day_of_week']);
     }
 
-    /** 
-     * @return \yii\db\ActiveQuery 
-     */ 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCronjobHours()
     {
-       return $this->hasMany(CronjobHour::className(), ['cronjob' => 'id']);
+       return $this->hasMany(CronjobElement::className(), ['cronjob' => 'id'])->alias('hours')->where(['hours.key' => 'hour']);
     }
 
-    /** 
-     * @return \yii\db\ActiveQuery 
-     */ 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCronjobMinutes()
     {
-       return $this->hasMany(CronjobMinute::className(), ['cronjob' => 'id']);
+       return $this->hasMany(CronjobElement::className(), ['cronjob' => 'id'])->alias('minutes')->where(['minutes.key' => 'minute']);
     }
 
-    /** 
-     * @return \yii\db\ActiveQuery 
-     */ 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getCronjobMonths()
     {
-       return $this->hasMany(CronjobMonth::className(), ['cronjob' => 'id']);
+       return $this->hasMany(CronjobElement::className(), ['cronjob' => 'id'])->alias('months')->where(['months.key' => 'month']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCronjobElements()
+    {
+       return $this->hasMany(CronjobElement::className(), ['cronjob' => 'id']);
     }
     
     public static function find()
@@ -120,11 +128,38 @@ class Cronjob extends \yii\db\ActiveRecord
         return $this->asText('cronjobDays');
     }
 
+    public function afterSave( $insert, $changedAttributes )
+    {
+        parent::afterSave( $insert, $changedAttributes );
+        CronjobElement::deleteAll('cronjob = ' . $this->id);
+    }
+
+    public function getCronjobString()
+    {
+        $attributes = [
+            'cronjobMinutes',
+            'cronjobHours',
+            'cronjobDays',
+            'cronjobDayOfWeeks',
+            'cronjobMonths',
+        ];
+        $out = [];
+        foreach ( $attributes as $attribute ){
+            $out[] = $this->asText($attribute);
+        }
+        return implode(" ", $out);
+    }
+
+    public function getCrontabString()
+    {
+        return $this->cron_command . " " . $this->cronjobString;
+    }
+
     public function getCronjobDayOfWeeksAsText()
     {
         if (count($this->cronjobDayOfWeeks > 0)){
             $out = [];
-            $list = $this->listDaysOfWeek();
+            $list = array_merge(['*'=>'*'],$this->listDaysOfWeek());
             foreach ($this->cronjobDayOfWeeks as $model){
                 if ($model->value != "0") {
                     $out[] = $list[$model->value];
@@ -135,7 +170,7 @@ class Cronjob extends \yii\db\ActiveRecord
             return implode(", ", $out);
         } else {
             return "*";
-        } 
+        }
     }
 
     public function getCronjobMonthsAsText()
@@ -150,10 +185,10 @@ class Cronjob extends \yii\db\ActiveRecord
             foreach ($this->$attribute as $model){
                 $out[] = $model->value;
             }
-            return implode(", ", $out);
+            return implode(",", $out);
         } else {
             return "*";
-        } 
+        }
     }
 
     public function listDaysOfWeek(){
@@ -162,5 +197,15 @@ class Cronjob extends \yii\db\ActiveRecord
             $days_of_week[$day] = date('D', strtotime("Sunday +{$day} days"));
         }
         return $days_of_week;
+    }
+
+    public function getRelationMap(){
+        return [
+            'minute' => 'cronjobMinutes',
+            'hour' => 'cronjobHours',
+            'day' => 'cronjobDays',
+            'day_of_week' => 'cronjobDayOfWeeks',
+            'month' => 'cronjobMonths'
+        ];
     }
 }

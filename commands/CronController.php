@@ -1,6 +1,6 @@
 <?php
 
-namespace app\commands;
+namespace sylletka\cronjob\commands;
 
 use yii;
 use yii\console\Controller;
@@ -11,16 +11,16 @@ class CronController extends Controller
     public function actionIndex()
     {
         $cronjobs = Cronjob::find()
-            ->joinWith('cronjobHours')
-            ->joinWith('cronjobMinutes')
-            ->joinWith('cronjobDays')
-            ->joinWith('cronjobDayOfWeeks')
-            ->joinWith('cronjobMonths')
-            ->andWhere(['or',['cronjob_minute.value' => "*"],['cronjob_minute.value' => date('i')]])
-            ->andWhere(['or',['cronjob_hour.value' => "*"],['cronjob_hour.value' => date('H')]])
-            ->andWhere(['or',['cronjob_day.value' => "*"],['cronjob_day.value' => date('d')]])
-            ->andWhere(['or',['cronjob_day_of_week.value' => "0"],['cronjob_day_of_week.value' => date('w')]])
-            ->andWhere(['or',['cronjob_month.value' => "*"],['cronjob_month.value' => date('m')]])
+            ->joinWith('cronjobHours hours')
+            ->joinWith('cronjobMinutes minutes')
+            ->joinWith('cronjobDays days')
+            ->joinWith('cronjobDayOfWeeks day_of_weeks')
+            ->joinWith('cronjobMonths months')
+            ->andWhere(['or',['minutes.value' => "*"],['minutes.value' => date('i')]])
+            ->andWhere(['or',['hours.value' => "*"],['hours.value' => date('H')]])
+            ->andWhere(['or',['days.value' => "*"],['days.value' => date('d')]])
+            ->andWhere(['or',['day_of_weeks.value' => "*"],['day_of_weeks.value' => date('w')]])
+            ->andWhere(['or',['months.value' => "*"],['months.value' => date('m')]])
             ->all();
         foreach ($cronjobs as $cronjob) {
             $command = new $cronjob->cron_command;
@@ -28,4 +28,3 @@ class CronController extends Controller
         }
     }
 }
-
